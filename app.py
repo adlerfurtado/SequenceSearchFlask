@@ -9,6 +9,11 @@ def home():
     # Renderiza um arquivo HTML da pasta "templates"
     return render_template('home.html')
 
+@app.route('/results')
+def results():
+    # Renderiza um arquivo HTML da pasta "templates"
+    return render_template('results.html')
+
 
 # Só roda o servidor se for executado diretamente e não importado como módulo
 if __name__ == '__main__':

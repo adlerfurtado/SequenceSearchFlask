@@ -10,19 +10,32 @@
   font-display: swap; /*Modo de carregar a fonte, boa prática */
 }
 
+/* Atributos padrão do body */
 body {
-  background-image: url('/static/home_background.jpg');
-  background-size: auto; 
-  background-position: center center;
-  background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* centraliza verticalmente */
+  justify-content: center;
   min-height: 100vh;
-  padding: 1rem; 
-  position: relative; /* Ajuste para permitir posicionamento absoluto de pseudo-elementos */
+  padding: 1rem;
+  position: relative;
 }
+
+/* Background específico de Home */
+body.home {
+  background-image: url('/static/home_background.jpg');
+  background-size: auto;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+/* Background específico de Results */
+body.results {
+  background-image: url('/static/results_background.jpg');
+  background-size: auto;
+  background-position: center center;
+  background-repeat: no-repeat;
+}S
 
 .title {
   text-align: center;
@@ -36,7 +49,6 @@ body {
   font-weight: 700; 
   letter-spacing: 1px;
 }
-
 
 /* Barra de pesquisas */
 .search, .search.bar {
@@ -87,14 +99,5 @@ body {
 .cd.player:hover {
   transform: translateY(2px);
 }
-
-/* Cursor customizado */
-body {
-  cursor: url('/static/cursor.svg') 16 16, auto;
-}
-/* Força ponteiro em elementos clicáveis, vou criar outro */
-button, .search.bar button, a { cursor: pointer; }
-/* Inputs de texto devem manter cursor de texto */
-input[type="text"], textarea { cursor: text; }
 
 
