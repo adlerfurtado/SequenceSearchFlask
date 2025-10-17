@@ -1,0 +1,30 @@
+<!DOCTYPE html> 
+<html lang="pt-br"> <!-- Informa a linguagem da página -->
+<head> <!-- Parte onde a gente insere os metadados (dados invisíveis) -->
+  <!-- Conjunto de caracteres da página = UTF-8, permite sinais e símbolos -->
+  <meta charset="UTF-8"> 
+  <!-- Tamanho da página é variável com o dispositivo, zoom inicial é padrão -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>INTERNET</title>
+
+  <!-- Linkando com o CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+  <!-- Titulo do site -->
+  <header class="title">
+      <h1>WELCOME TO THE INTERNET</h1>
+  </header>
+
+  <!-- Search  bar -->
+  <main class="search bar">
+    <div class="search bar">
+        <input id="search-input" type="text" placeholder="SEARCH FOR THE KNOWLEDGE">
+    </div>
+    <div class="search-action">
+      <button id="search-btn" class="big-search">SEARCH</button>
+    </div>
+  </main>

@@ -1,0 +1,89 @@
+/* Reset simples */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Fonte customizada */
+@font-face {
+  font-family: 'TitleFont';
+  src: url('/static/title.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; /*Modo de carregar a fonte, boa prática */
+}
+
+body {
+  background-image: url('/static/home_background.jpg');
+  background-size: auto; 
+  background-position: center center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* centraliza verticalmente */
+  min-height: 100vh;
+  padding: 1rem; 
+}
+
+/* Cabeçalho */
+.title {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+.title h1 {
+  font-size: 1.35rem;
+  font-family: 'TitleFont', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: #ffffff;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.03);
+  font-weight: 700; 
+  letter-spacing: 1px;
+}
+
+/* Barra de pesquisas */
+.search, .search.bar {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.search.bar input[type="text"] {
+  flex: 1 1 320px; 
+  padding: 0.7rem 0.85rem;
+  border: 1px solid #9fb5d8; 
+  background: linear-gradient(#f7fbff, #dfeeff); /* gradient suave estilo XP */
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -2px 6px rgba(0,0,0,0.06);
+  font-size: 0.95rem;
+}
+
+.search.bar button {
+  padding: 0.7rem 0.95rem;
+  border: 1px solid #2b67a8; /* borda azul escura estilo botão */
+  background: linear-gradient(#eaf3ff, #cfe3fb); /* tom azulado XP */
+  color: #072b59; /* texto escuro para combinar */
+  font-weight: 700; /* Deixa mais grosso */
+  box-shadow: 0 4px 0 #1f4f83, inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+/* Efeito ao passar o mouse no botão, vai pra baixo e diminui a sombra */
+.search.bar button:hover {
+  transform: translateY(1px); 
+  box-shadow: 0 2px 0 #1f4f83, inset 0 1px 0 rgba(255,255,255,0.7);
+}
+
+@media (max-width: 480px) {
+  .title h1 { font-size: 1.05rem; }
+  .search.bar input[type="text"] { font-size: 0.9rem; }
+  .search, .search.bar { max-width: 95%; }
+}
+
+
+/* Cursor customizado */
+body {
+  cursor: url('/static/cursor.svg') 16 16, auto;
+}
+/* Força ponteiro em elementos clicáveis, vou criar outro */
+button, .search.bar button, a { cursor: pointer; }
+/* Inputs de texto devem manter cursor de texto */
+input[type="text"], textarea { cursor: text; }
+
+

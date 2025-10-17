@@ -1,12 +1,13 @@
-from flask import Flask
+from flask import Flask, render_template
 
 # Criação da aplicação Flask 
-app = Flask(__name__)   # __name__ é uma variável interna que marca o módulo atual
+app = Flask(__name__)
 
 
-@app.route('/') # Quando o usuário acessa '/' (rota raiz), a função é chamada
-def home(): 
-    return "Olá, Flask! 🚀"
+@app.route('/')
+def home():
+    # Renderiza um arquivo HTML da pasta "templates"
+    return render_template('home.html')
 
 
 # Só roda o servidor se for executado diretamente e não importado como módulo
