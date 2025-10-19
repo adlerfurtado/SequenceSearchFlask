@@ -31,7 +31,7 @@ class Trie:
         while padrao:
             # Itera sobre as chaves atuais.
             for chave in list(node.filhos.keys()): # Lista todos os filhos do nó atual
-                comum = self._common_prefix_len(chave, padrao)
+                comum = self.tam_prefixo_comum(chave, padrao)
                 # Se não tem nenhum prefixo comum, pula pro proximo filho da lista
                 if comum == 0:
                     continue
@@ -67,7 +67,7 @@ class Trie:
                 return  
 
             else:
-                # Sem prefixo comum com os filhos -> novo nó com o restante do padrao
+                # Caso 3 = Não tem prefixo comum com os filhos -> novo nó com o restante do padrao
                 novo = Node()
                 novo.folha = True
                 novo.arquivos.add(arquivo)
@@ -77,3 +77,50 @@ class Trie:
         # Se chega aqui é porque o padrão foi consumido completamente
         node.folha = True
         node.arquivos.add(arquivo)
+
+    # Remove padrao associado a um arquivo da Trie (recursivamente)
+    def remover(self, padrao: str, arquivo: str):
+        # Função recursiva: retorna True se o padrão foi removido
+        def pode_remover(node, padrao):
+            for chave, filho in list(node.filhos.items()):  # Itera sobre os filhos
+                comum = self.tam_prefixo_comum(chave, padrao)
+
+                # Se não tem prefixo comum, passa pro próximo filho
+                if comum == 0:
+                    continue
+
+                # Se o prefixo em comum é menor que padrão e que a chave então não tem valor associado
+                if comum < len(chave) and comum < len(padrao):
+                    return False
+
+                # Padrão foi totalmente consumido no nó atual
+                elif comum == len(padrao) and comum <= len(chave):
+                    if arquivo in filho.arquivos:
+                        filho.arquivos.remove(arquivo)
+
+                    # Se não tem mais arquivos associados tira o valor associado
+                    if not filho.arquivos:
+                        filho.folha = False
+
+                    # Remove o nó se ele estiver completamente vazio
+                    if not filho.filhos and not filho.folha:
+                        node.filhos.pop(chave)
+
+                    return True  # Padrão removido 
+
+                # Padrão continua no filho
+                elif comum == len(chave) and comum < len(padrao): # Ou seja o padrão é maior que a chave do nó
+                    padrao_resto = padrao[comum:]
+                    removido = pode_remover(filho, padrao_resto)
+
+                    # Verifica se todos os filhos do nó filho foram removidos e se tem valor associado
+                    if removido and not filho.filhos and not filho.folha:
+                        node.filhos.pop(chave)
+
+                    return removido
+
+            # Nenhum filho tem prefixo comum com o padrão
+            return False
+
+        # Remove começando da raiz e retorna se deu certo
+        return pode_remover(self.raiz, padrao)
