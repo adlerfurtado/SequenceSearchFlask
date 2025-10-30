@@ -1,21 +1,268 @@
-<!DOCTYPE html> 
-<html lang="pt-br"> <!-- Informa a linguagem da página -->
-<head> <!-- Parte onde a gente insere os metadados (dados invisíveis) -->
-  <!-- Conjunto de caracteres da página = UTF-8, permite sinais e símbolos -->
-  <meta charset="UTF-8"> 
-  <!-- Tamanho da página é variável com o dispositivo, zoom inicial é padrão -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>INTERNET</title>
-
-  <!-- Linkando com o CSS -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Results</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='estrela.png') }}">
 
+  <style>
+    body {
+      background-image: url("{{ url_for('static', filename='results_background.jpg') }}");
+      background-size: cover;
+      background-attachment: fixed;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      font-family: 'titlefont', monospace;
+      margin-top: 40px;
+      font-size: 28px;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px #0ff;
+    }
+    .caixa-busca { margin-top: 20px; }
+
+    input[type="text"] {
+      width: 60%;
+      padding: 10px;
+      border: 2px solid #00ffff;
+      background-color: rgba(0, 0, 0, 0.4);
+      color: #fff;
+      border-radius: 6px;
+    }
+    input[type="submit"] {
+      padding: 10px 20px;
+      background-color: #00ffff;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 6px;
+      margin-left: 5px;
+    }
+
+    .resultado {
+      background-color: rgba(0, 0, 0, 0.6);
+      border: 1px solid #00ffff;
+      border-radius: 10px;
+      width: 80%;
+      margin: 20px auto;
+      padding: 15px;
+      text-align: left;
+      line-height: 1.5;
+    }
+    .resultado h2 {
+      color: #00ffff;
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+    .resultado h2 a {
+  color: #7ef9ff;              /* ciano como o resto do tema */
+  text-decoration: none;       /* tira o sublinhado */
+  font-weight: bold;
+  text-shadow: 0 0 12px #00ffff;
+  transition: 0.2s;
+}
+
+.resultado h2 a:hover {
+  color: #000;                 /* preto ao passar o mouse */
+  background-color: #00ffff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  box-shadow: 0 0 12px #00ffff;
+}
+
+    .relevancia { font-size: 12px; color: #ccc; }
+    mark { background: #00ffff; color: #000; font-weight: bold; padding: 0 2px; }
+
+    .paginacao { margin: 30px; }
+    .paginacao a {
+      color: #00ffff;
+      text-decoration: none;
+      padding: 6px 14px;
+      border: 1px solid #00ffff;
+      border-radius: 6px;
+      margin: 0 5px;
+      font-weight: bold;
+      text-shadow: 0 0 6px #00ffff;
+      background-color: rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+      transition: all 0.2s ease;
+    }
+    .paginacao a:hover {
+      background-color: #00ffff;
+      color: #000;
+      box-shadow: 0 0 12px #00ffff;
+    }
+
+    .rodape {
+      margin: 30px 0 60px 0;
+      font-size: 15px;
+      color: #e0ffff;
+      text-shadow: 0 0 8px rgba(0,255,255,0.7);
+      font-family: 'Courier New', monospace;
+      letter-spacing: 1px;
+      font-weight: bold;
+      background-color: rgba(0, 0, 0, 0.35);
+      display: inline-block;
+      padding: 8px 18px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,255,255,0.3);
+    }
+
+    /* se ainda não estiver no style.css, use este estilo do botão de música */
+    .music-toggle-wrapper {
+      position: fixed;
+      right: 18px;
+      top: 18px;
+      z-index: 1000;
+    }
+    .music-toggle {
+      background: rgba(0,0,0,0.35);
+      color: #00ffff;
+      border: 1px solid #00ffff;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      text-shadow: 0 0 6px #00ffff;
+      box-shadow: 0 0 10px rgba(0,255,255,0.35);
+      transition: all .2s ease;
+      backdrop-filter: blur(2px);
+    }
+    .music-toggle:hover {
+      background: #00ffff;
+      color: #000;
+      box-shadow: 0 0 14px #00ffff;
+    }
+    .music-toggle[aria-pressed="false"] {
+      background: rgba(0,255,255,0.15);
+      box-shadow: 0 0 16px rgba(0,255,255,0.6);
+    }
+
+    .voltar-home {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  color: #00ffff;
+  text-decoration: none;
+  border: 1px solid #00ffff;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-family: 'Courier New', monospace;
+  background-color: rgba(0,0,0,0.4);
+  box-shadow: 0 0 10px rgba(0,255,255,0.5);
+  transition: all 0.2s ease;
+  z-index: 1000;
+}
+
+.voltar-home:hover {
+  background-color: #00ffff;
+  color: #000;
+  box-shadow: 0 0 15px #00ffff;
+}
+
+  </style>
 </head>
 
-<body class="results">
-  <!-- Titulo do site -->
-  <header class="title">
-      <h1>HERE'S EVERYTHING YOU NEED TO KNOW</h1>
-  </header>
+<body>
+  <!-- Botão de voltar -->
+  <a href="{{ url_for('home') }}" class="voltar-home">← Voltar</a>
+  <h1>HERE'S EVERYTHING YOU NEED TO KNOW</h1>
+
+  <div class="caixa-busca">
+    <form action="{{ url_for('results') }}" method="get">
+      <input type="text" name="q" value="{{ consulta }}" placeholder="Search for the knowledge">
+      <input type="submit" value="SEARCH">
+    </form>
+  </div>
+
+  {% if resultados %}
+    {% for r in resultados %}
+  <div class="resultado">
+    <h2>
+      <a href="{{ url_for('documento', arquivo=r.arquivo_path) }}" target="_blank">
+        {{ r.titulo }}
+      </a>
+    </h2>
+    <div class="relevancia">Relevância: {{ r.relevancia }}</div>
+    <p>{{ r.snippet|safe }}</p>
+  </div>
+{% endfor %}
+
+  {% else %}
+    <p style="margin-top:50px;">No results found. Try something like <b>economy AND oil</b> or <b>(tech AND microsoft) OR apple</b>.</p>
+  {% endif %}
+
+  <div class="paginacao">
+    {% if consulta %}
+      {% if pagina > 1 %}
+        <a href="/results?q={{ consulta }}&page={{ pagina-1 }}">« Prev</a>
+      {% endif %}
+      {% if total > pagina*tam_pagina %}
+        <a href="/results?q={{ consulta }}&page={{ pagina+1 }}">Next »</a>
+      {% endif %}
+    {% endif %}
+  </div>
+
+  <div class="rodape">
+    Exibindo {{ resultados|length }} de {{ total }} resultados •
+    Consulta processada em {{ (duracao_ms / 1000) | round(3) }} s.
+  </div>
+
+  <!-- Música de fundo (tenta tocar automaticamente) -->
+  <audio id="bg-music" autoplay loop playsinline>
+    <source src="{{ url_for('static', filename='aquatic_ambience.mp3') }}" type="audio/mpeg">
+  </audio>
+
+  <!-- Botão para silenciar -->
+  <div class="music-toggle-wrapper">
+    <button id="music-toggle" class="music-toggle" aria-pressed="true" title="Silenciar música">🔊 Stop music</button>
+  </div>
+
+  <!-- Salva posição ao sair + toggle da música -->
+  <script>
+    // salva o tempo atual ao sair da página (para retomar no mesmo ponto)
+    window.addEventListener('beforeunload', () => {
+      const audio = document.getElementById('bg-music');
+      if (audio) localStorage.setItem('bg_music_time', audio.currentTime || 0);
+    });
+
+    (function () {
+      const audio = document.getElementById('bg-music');
+      const btn   = document.getElementById('music-toggle');
+      if (!audio || !btn) return;
+
+      // volume inicial confortável
+      audio.volume = 0.35;
+
+      // retoma ponto anterior (se houver)
+      const savedTime = localStorage.getItem('bg_music_time');
+      if (savedTime) audio.currentTime = parseFloat(savedTime);
+
+      // tenta iniciar som automaticamente
+      audio.play().then(() => setBtn(true)).catch(() => setBtn(false));
+
+      // toggle manual
+      btn.addEventListener('click', async () => {
+        if (audio.paused) {
+          try { await audio.play(); setBtn(true); } catch(e){ console.log(e); }
+        } else {
+          audio.pause(); setBtn(false);
+        }
+      });
+
+      function setBtn(playing) {
+        btn.textContent = playing ? '🔊 Stop music' : '🔈 Play music';
+        btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+      }
+    })();
+  </script>
 </body>
+</html>

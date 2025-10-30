@@ -1,35 +1,91 @@
 <!DOCTYPE html> 
-<html lang="pt-br"> <!-- Informa a linguagem da página -->
-<head> <!-- Parte onde a gente insere os metadados (dados invisíveis) -->
-  <!-- Conjunto de caracteres da página = UTF-8, permite sinais e símbolos -->
+<html lang="pt-br">
+<head>
   <meta charset="UTF-8"> 
-  <!-- Tamanho da página é variável com o dispositivo, zoom inicial é padrão -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>INTERNET</title>
-
-  <!-- Linkando com o CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='estrela.png') }}">
 
 </head>
 
-<body class = "home">
-  <!-- Titulo do site -->
+<body class="home">
+
+  <!-- Título do site -->
   <header class="title">
-      <h1>WELCOME TO THE INTERNET</h1>
+    <h1>WELCOME TO THE INTERNET</h1>
   </header>
 
-  <!-- Cd player no canto do site-->
-  <img src="/static/cd_player.jpg" alt="CD Player" class="cd player">
+  <!-- CD Player no canto -->
+  <img src="{{ url_for('static', filename='cd_player.jpg') }}" alt="CD Player" class="cd player">
 
-  <!-- Search  bar -->
+  <!-- Barra de busca -->
   <main class="search bar">
-    <div class="search bar">
-        <input id="search-input" type="text" placeholder="SEARCH FOR THE KNOWLEDGE">
-    </div>
-    <div class="search-action">
-      <button id="search-btn" class="big-search">SEARCH</button>
-    </div>
+    <form action="{{ url_for('results') }}" method="get" class="search-bar">
+      <div class="search bar">
+        <input 
+          id="search-input" 
+          type="text" 
+          name="q" 
+          placeholder="SEARCH FOR THE KNOWLEDGE"
+          required>
+      </div>
+      <div class="search-action">
+        <button type="submit" id="search-btn" class="big-search">SEARCH</button>
+      </div>
+    </form>
   </main>
+<!-- Música de fundo -->
+<audio id="bg-music" autoplay loop>
+  <source src="{{ url_for('static', filename='aquatic_ambience.mp3') }}" type="audio/mpeg">
+</audio>
 
-</body> 
+<!-- Botão para silenciar -->
+<div class="music-toggle-wrapper">
+  <button id="music-toggle" class="music-toggle" aria-pressed="true" title="Silenciar música">🔊 Stop music</button>
+</div>
+
+<script>
+  (function () {
+    const audio = document.getElementById('bg-music');
+    const btn   = document.getElementById('music-toggle');
+
+    // volume inicial confortável
+    audio.volume = 0.35;
+
+    // tenta iniciar o som automaticamente
+    audio.play().catch(() => {
+      // se o navegador bloquear o autoplay, mostra o botão pra ativar
+      console.log('Autoplay bloqueado — o usuário precisa clicar para ativar o som.');
+      setButtonState(false);
+    });
+
+    btn.addEventListener('click', async () => {
+      // alterna entre tocar e pausar
+      if (audio.paused) {
+        try {
+          await audio.play();
+          setButtonState(true);
+        } catch (e) {
+          console.log('Falha ao tocar áudio:', e);
+        }
+      } else {
+        audio.pause();
+        setButtonState(false);
+      }
+    });
+
+    function setButtonState(playing) {
+      if (playing) {
+        btn.textContent = '🔊 Stop music';
+        btn.setAttribute('aria-pressed', 'true');
+      } else {
+        btn.textContent = '🔈 Play music';
+        btn.setAttribute('aria-pressed', 'false');
+      }
+    }
+  })();
+</script>
+
+</body>
+</html>

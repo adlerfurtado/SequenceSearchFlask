@@ -101,4 +101,38 @@ body.results {
   transform: translateY(2px);
 }
 
+.music-toggle-wrapper {
+  position: fixed;          /* fica sempre visível */
+  right: 18px;              /* canto superior direito */
+  top: 18px;
+  z-index: 1000;
+}
+
+.music-toggle {
+  background: rgba(0,0,0,0.35);
+  color: #00ffff;
+  border: 1px solid #00ffff;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  text-shadow: 0 0 6px #00ffff;
+  box-shadow: 0 0 10px rgba(0,255,255,0.35);
+  transition: all .2s ease;
+  backdrop-filter: blur(2px);
+}
+
+.music-toggle:hover {
+  background: #00ffff;
+  color: #000;
+  box-shadow: 0 0 14px #00ffff;
+}
+
+.music-toggle[aria-pressed="true"] {
+  /* estado "tocando": um pouquinho mais brilhante */
+  background: rgba(0,255,255,0.15);
+  box-shadow: 0 0 16px rgba(0,255,255,0.6);
+}
 
