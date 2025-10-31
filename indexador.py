@@ -12,13 +12,14 @@ from trie import Trie
 
 
 class IndexadorInvertido:
-
-    #Sistema principal de indexação e recuperação de documentos.
+    """
+    Sistema principal de indexação e recuperação de documentos.
+    """
 
     def __init__(self):
         self.trie = Trie()
         self.postings = defaultdict(dict)      # termo -> {doc: tf}
-        self.documentos = {}                   # doc -> texto
+        self.documentos = {}                   # doc -> texto bruto
         self.metadados_documentos = {}         # doc -> metadados simples
         self.estatisticas_globais = {
             "total_documentos": 0,
@@ -32,16 +33,13 @@ class IndexadorInvertido:
     _RE_TOKEN = re.compile(r"[a-z0-9]+", re.IGNORECASE)
 
     def _normalizar(self, texto: str) -> str:
-        """
-        Deixa tudo minúsculo e troca pontuação por espaços.
-        (Simples e suficiente para o TP; dá pra evoluir depois.)
-        """
+        """Minúsculas + troca pontuação por espaço (simples e eficaz)."""
         return re.sub(r"[^\w\s]", " ", texto.lower())
 
     def _tokenizar(self, texto: str) -> list[str]:
         """
-        Quebra o texto em palavras "válidas" (apenas letras/dígitos).
-        Removo palavras com 1-2 letras porque tendem a ser muito ruidosas.
+        Extrai palavras (letras/dígitos) e remove tokens muito curtos (<=2),
+        que normalmente são ruído para este corpus.
         """
         texto = self._normalizar(texto)
         tokens = self._RE_TOKEN.findall(texto)
@@ -55,14 +53,14 @@ class IndexadorInvertido:
         - quebra em palavras
         - atualiza Trie (presença)
         - atualiza postings (contagem tf)
-        - armazena metadados
+        - armazena metadados básicos
         """
         tokens = self._tokenizar(conteudo)
 
         # guarda texto bruto (para snippet)
         self.documentos[caminho] = conteudo
 
-        # metadado básico, só pra ter algo útil no relatório/resultados
+        # metadados simples
         self.metadados_documentos[caminho] = {
             "tamanho": len(conteudo),
             "num_palavras": len(tokens),
@@ -82,19 +80,18 @@ class IndexadorInvertido:
         # estatística global simples
         self.estatisticas_globais["total_documentos"] += 1
         self.estatisticas_globais["total_palavras"] += len(tokens)
-    
+
     def obter_titulo_documento(self, caminho: str) -> str:
         """
-        Retorna o título do documento (primeira linha ou nome do arquivo).
+        Retorna o título do documento (primeira linha não vazia) ou,
+        na falta dela, o nome do arquivo.
         """
         try:
             conteudo = self.documentos.get(caminho)
             if conteudo:
-                # Pega a primeira linha não vazia como título
                 for linha in conteudo.splitlines():
                     if linha.strip():
                         return linha.strip()
-            # Se não achou, devolve o nome do arquivo
             return os.path.basename(caminho)
         except Exception:
             return os.path.basename(caminho)
@@ -132,7 +129,7 @@ class IndexadorInvertido:
                 except Exception as e:
                     print(f"Erro ao processar {caminho}: {e}")
 
-        # palavras únicas: simplesmente o número de chaves em postings
+        # palavras únicas = número de termos no índice
         self.estatisticas_globais["palavras_unicas"] = len(self.postings)
         self.indice_carregado = True
         print(f"Indexação concluída! {docs} documentos processados.")
@@ -141,17 +138,14 @@ class IndexadorInvertido:
     # ---------- API para a busca ----------
 
     def obter_postings(self, termo: str) -> dict:
-        """
-        Retorna {documento: tf} para um termo.
-        Se o termo não existir, devolve dicionário vazio.
-        """
+        """Retorna {documento: tf} para um termo (pode ser {})."""
         return dict(self.postings.get(termo, {}))
 
     def calcular_zscore(self, termo: str, documento: str) -> float:
         """
         z-score = (tf_doc - média) / desvio_padrão
-        onde média e desvio são calculados sobre os documentos em que o termo aparece.
-        Se o termo não aparece em lugar nenhum (ou variância zero), retorna 0.
+        média e desvio são calculados sobre os documentos onde o termo aparece.
+        Se variância = 0 ou termo ausente, retorna 0.
         """
         docs_tf = self.postings.get(termo, {})
         if not docs_tf:
@@ -159,8 +153,7 @@ class IndexadorInvertido:
 
         valores = list(docs_tf.values())
         media = sum(valores) / len(valores)
-        # variância populacional
-        var = sum((v - media) ** 2 for v in valores) / len(valores)
+        var = sum((v - media) ** 2 for v in valores) / len(valores)  # variância populacional
         desvio = math.sqrt(var) if var > 0 else 0.0
 
         tf_doc = docs_tf.get(documento, 0)
@@ -204,7 +197,7 @@ class IndexadorInvertido:
         """
         Lê o arquivo de índice e reconstrói:
           - postings (com tf)
-          - presença na Trie (inserindo uma única vez por doc, pois ela só guarda presença)
+          - presença na Trie (inserindo 1x por doc, pois a Trie só guarda presença)
           - documentos (conteúdo bruto) para snippet
         """
         if not os.path.exists(caminho_arquivo):
@@ -261,10 +254,9 @@ class IndexadorInvertido:
                     with open(caminho, "r", encoding="utf-8", errors="ignore") as f:
                         self.documentos[caminho] = f.read()
                 except Exception as e:
-                    # se algum arquivo sumiu, seguimos em frente
                     print(f"Aviso: não consegui abrir {caminho}: {e}")
 
-            # se por algum motivo não veio no arquivo, garantimos estes dois números:
+            # garante números coerentes
             self.estatisticas_globais["total_documentos"] = max(
                 self.estatisticas_globais.get("total_documentos", 0),
                 len(self.metadados_documentos) or len(docs_list)

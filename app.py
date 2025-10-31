@@ -17,7 +17,7 @@ processador_busca = ProcessadorBusca(indexador)
 sistema_inicializado = False
 
 def inicializar_sistema():
-    """Carrega ou cria o índice apenas uma vez."""
+    """Carrega ou cria o índice apenas uma vez"""
     global sistema_inicializado
     if not sistema_inicializado:
         try:
@@ -31,7 +31,7 @@ def inicializar_sistema():
         except Exception as e:
             print(f"Erro: {e}")
 
-# ✅ ROTA DA HOME (voltar com ela evita o 404 em "/")
+# ROTA DA HOME
 @app.route('/')
 def home():
     if not sistema_inicializado:
@@ -94,9 +94,9 @@ def results():
 
 @app.route('/documento/<path:arquivo>')
 def documento(arquivo):
-    """
-    Exibe o conteúdo completo de um documento.
-    """
+
+    #Exibe o conteúdo completo de um documento
+    
     caminho = os.path.join(CORPUS_PATH, arquivo)
     if not os.path.exists(caminho):
         return render_template('documento.html', titulo="Arquivo não encontrado", conteudo="")
