@@ -26,7 +26,7 @@ body.home {
   background-image: url('/static/home_background.jpg');
   background-size: auto;
   background-position: center center;
-  background-repeat: no-repeat;
+  background-repeat: repeat;
 }
 
 /* Background específico de Results */
@@ -51,8 +51,8 @@ body.results {
   padding-bottom: 3px;
 }
 
-/* Barra de pesquisas */
-.search, .search.bar {
+/* Container principal da barra de busca */
+.search-container {
   width: 100%;
   max-width: 720px;
   display: flex;
@@ -60,27 +60,35 @@ body.results {
   margin-bottom: 1rem;
 }
 
-.search.bar input[type="text"] {
-  flex: 1 1 320px; 
+/* O formulário em si */
+.search-bar {
+  display: flex;
+  width: 100%;
+  gap: 0.5rem; /* espaço entre input e botão */
+}
+
+/* Campo de texto */
+.search-bar input[type="text"] {
+  flex: 1;
   padding: 0.7rem 0.85rem;
-  border: 1px solid #183a9a; 
-  background: linear-gradient(#f7fbff, #dfeeff); /* gradient suave estilo XP */
+  border: 1px solid #183a9a;
+  background: linear-gradient(#f7fbff, #dfeeff);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -2px 6px rgba(0,0,0,0.06);
   font-size: 0.95rem;
 }
 
-.search.bar button {
-  padding: 0.7rem 0.95rem;
-  border: 1px solid #183a9a; 
-  background: linear-gradient(#ffffff, #adaaac); 
-  color: #183a9a; 
-  font-weight: 700; /* Deixa mais grosso */
+/* Botão Search */
+.search-bar button {
+  padding: 0.7rem 1rem;
+  border: 1px solid #183a9a;
+  background: linear-gradient(#ffffff, #adaaac);
+  color: #183a9a;
+  font-weight: 700;
   box-shadow: 0 4px 0 #183a9a, inset 0 1px 0 #b7b7b5;
-  /* Deixa a transição mais lenta qnd mudar de estado (entrar ou sair do hover), apenas efeito estético */
   transition: background 200ms ease, color 200ms ease, border-color 200ms ease, box-shadow 150ms ease, transform 120ms ease;
 }
 
-.search.bar button:hover {
+.search-bar button:hover {
   transform: translateY(1px);
   background: linear-gradient(#e6f2ff, #bcdcff);
   color: #072b59;
@@ -100,39 +108,42 @@ body.results {
 .cd.player:hover {
   transform: translateY(2px);
 }
-
+/* Botão de música */
 .music-toggle-wrapper {
-  position: fixed;          /* fica sempre visível */
-  right: 18px;              /* canto superior direito */
-  top: 18px;
+  position: absolute; 
+  top: 1rem; 
+  right: 1rem; 
   z-index: 1000;
 }
 
 .music-toggle {
-  background: rgba(0,0,0,0.35);
-  color: #00ffff;
-  border: 1px solid #00ffff;
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-family: 'Courier New', monospace;
-  font-weight: bold;
-  letter-spacing: 0.5px;
+  padding: 0.7rem 1rem;
+  border: 1px solid #183a9a;
+  background: linear-gradient(#ffffff, #adaaac);
+  color: #183a9a;
+  font-weight: 700;
+  box-shadow: 0 4px 0 #183a9a, inset 0 1px 0 #b7b7b5;
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease, box-shadow 150ms ease, transform 120ms ease;
+
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; 
+  letter-spacing: normal; 
+  text-shadow: none; 
+  border-radius: 0; 
   cursor: pointer;
-  text-shadow: 0 0 6px #00ffff;
-  box-shadow: 0 0 10px rgba(0,255,255,0.35);
-  transition: all .2s ease;
-  backdrop-filter: blur(2px);
+  backdrop-filter: none; 
 }
 
 .music-toggle:hover {
-  background: #00ffff;
-  color: #000;
-  box-shadow: 0 0 14px #00ffff;
+  transform: translateY(1px);
+  background: linear-gradient(#e6f2ff, #bcdcff);
+  color: #072b59;
+  border-color: #0f4fb0;
+  box-shadow: 0 2px 0 #0f4fb0, inset 0 1px 0 #dfe7ec;
 }
 
 .music-toggle[aria-pressed="true"] {
-  /* estado "tocando": um pouquinho mais brilhante */
-  background: rgba(0,255,255,0.15);
-  box-shadow: 0 0 16px rgba(0,255,255,0.6);
+  background: linear-gradient(#e6f2ff, #bcdcff);
+  color: #072b59;
+  box-shadow: 0 2px 0 #0f4fb0, inset 0 1px 0 #dfe7ec;
+  transform: translateY(1px); 
 }
-

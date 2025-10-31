@@ -20,21 +20,18 @@
   <img src="{{ url_for('static', filename='cd_player.jpg') }}" alt="CD Player" class="cd player">
 
   <!-- Barra de busca -->
-  <main class="search bar">
-    <form action="{{ url_for('results') }}" method="get" class="search-bar">
-      <div class="search bar">
-        <input 
-          id="search-input" 
-          type="text" 
-          name="q" 
-          placeholder="SEARCH FOR THE KNOWLEDGE"
-          required>
-      </div>
-      <div class="search-action">
-        <button type="submit" id="search-btn" class="big-search">SEARCH</button>
-      </div>
-    </form>
-  </main>
+  <main class="search-container">
+  <form action="{{ url_for('results') }}" method="get" class="search-bar">
+    <input 
+      id="search-input" 
+      type="text" 
+      name="q" 
+      placeholder="SEARCH FOR THE KNOWLEDGE"
+      required>
+    <button type="submit" id="search-btn" class="big-search">SEARCH</button>
+  </form>
+</main>
+
 <!-- Música de fundo -->
 <audio id="bg-music" autoplay loop>
   <source src="{{ url_for('static', filename='aquatic_ambience.mp3') }}" type="audio/mpeg">
